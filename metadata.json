@@ -1,0 +1,6 @@
+{
+  "name": "정치 주체와 역할 3단 선긋기 퀴즈",
+  "description": "사례-정치주체-역할을 선으로 이어 학습하는 인터랙티브 정치 퀴즈 및 구글 시트 연동 앱스스크립트 배포 시스템",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
