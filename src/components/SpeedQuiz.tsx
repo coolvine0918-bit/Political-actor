@@ -259,14 +259,24 @@ export function SpeedQuiz({ studentId, studentName, soundOn, gasUrl }: SpeedQuiz
 
     // Case 2: External Webhook POST (Directly to teacher's deployed Apps Script)
     const targetUrl =
-      gasUrl ||
-      'https://script.google.com/macros/s/AKfycbx6_oqW-V4kOUqMyc2o00MaegJ73ov9C3Um14R_UD9FwuKOtPi1mA_Qj9RQbBeo8Hycow/exec';
+      (gasUrl && !gasUrl.includes('AKfycbx6_oqW') ? gasUrl : null) ||
+      'https://script.google.com/macros/s/AKfycbxp8qS_78pJXgpWUc9iWJVCs1gJuDpHqbr_LhoArCVYQtXkOZ3fuwx7L_U0sSz_7XdduA/exec';
 
     if (targetUrl && targetUrl.startsWith('http')) {
-      fetch(targetUrl, {
+      const urlWithParams = `${targetUrl}${
+        targetUrl.includes('?') ? '&' : '?'
+      }type=speed_quiz&sheet=${encodeURIComponent('시트2')}&studentId=${encodeURIComponent(
+        payload.studentId
+      )}&studentName=${encodeURIComponent(payload.studentName)}&score=${payload.score}&attemptNumber=${
+        payload.attemptNumber
+      }&correctCount=${payload.correctCount}&totalQuestions=${payload.totalQuestions}&timeSpent=${
+        payload.timeSpent
+      }`;
+
+      fetch(urlWithParams, {
         method: 'POST',
         mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload)
       })
         .then(() => {
@@ -275,11 +285,24 @@ export function SpeedQuiz({ studentId, studentName, soundOn, gasUrl }: SpeedQuiz
             message: '구글 스프레드시트 [시트2]에 성공적으로 전송 및 기록되었습니다!'
           });
         })
-        .catch((err) => {
-          setSubmitStatus({
-            status: 'error',
-            message: '전송 오류 발생: ' + err
-          });
+        .catch(() => {
+          // Fallback to GET method if POST is blocked by network
+          fetch(urlWithParams, {
+            method: 'GET',
+            mode: 'no-cors'
+          })
+            .then(() => {
+              setSubmitStatus({
+                status: 'success',
+                message: '구글 스프레드시트 [시트2]에 성공적으로 전송 및 기록되었습니다!'
+              });
+            })
+            .catch((err) => {
+              setSubmitStatus({
+                status: 'error',
+                message: '전송 오류 발생: ' + err
+              });
+            });
         });
       return;
     }

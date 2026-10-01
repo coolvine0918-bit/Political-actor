@@ -16,7 +16,7 @@ import { SpeedQuiz } from './components/SpeedQuiz';
 import { sounds } from './utils/audio';
 
 export const DEFAULT_GAS_URL =
-  'https://script.google.com/macros/s/AKfycbx6_oqW-V4kOUqMyc2o00MaegJ73ov9C3Um14R_UD9FwuKOtPi1mA_Qj9RQbBeo8Hycow/exec';
+  'https://script.google.com/macros/s/AKfycbxp8qS_78pJXgpWUc9iWJVCs1gJuDpHqbr_LhoArCVYQtXkOZ3fuwx7L_U0sSz_7XdduA/exec';
 
 export default function App() {
   // Navigation Tab: 'line-quiz' | 'speed-quiz'
@@ -62,10 +62,15 @@ export default function App() {
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [currentSubmission, setCurrentSubmission] = useState<StudentSubmission | null>(null);
 
-  // Google Apps Script Web App URL (Hardcoded with teacher's deployment URL)
+  // Google Apps Script Web App URL (Hardcoded with teacher's new deployment URL)
   const [gasUrl, setGasUrl] = useState<string>(() => {
     const saved = localStorage.getItem('gas_quiz_webhook_url');
-    return saved && saved.startsWith('http') ? saved : DEFAULT_GAS_URL;
+    // If empty or old URL, auto-migrate to the new deployed URL
+    if (!saved || saved.includes('AKfycbx6_oqW') || !saved.startsWith('http')) {
+      localStorage.setItem('gas_quiz_webhook_url', DEFAULT_GAS_URL);
+      return DEFAULT_GAS_URL;
+    }
+    return saved;
   });
 
   const [sheetSubmitStatus, setSheetSubmitStatus] = useState<{
@@ -418,22 +423,39 @@ export default function App() {
     };
 
     if (gasUrl) {
+      const urlWithParams = `${gasUrl}${
+        gasUrl.includes('?') ? '&' : '?'
+      }type=line_quiz&sheet=${encodeURIComponent('시트1')}&studentId=${encodeURIComponent(
+        sub.studentId
+      )}&studentName=${encodeURIComponent(sub.studentName)}&score=${sub.score}&correctCount=${
+        sub.correctCount
+      }&totalQuestions=${sub.totalQuestions}`;
+
       try {
-        await fetch(gasUrl, {
+        await fetch(urlWithParams, {
           method: 'POST',
           mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(payload),
         });
         setSheetSubmitStatus({
           status: 'success',
-          message: '구글 스프레드시트에 성공적으로 기록되었습니다!',
+          message: '구글 스프레드시트 [시트1]에 성공적으로 기록되었습니다!',
         });
       } catch {
-        setSheetSubmitStatus({
-          status: 'error',
-          message: '시트 전송 중 통신 오류가 발생했습니다. (앱스스크립트 배포 설정을 확인하세요)',
-        });
+        // Fallback GET
+        try {
+          await fetch(urlWithParams, { method: 'GET', mode: 'no-cors' });
+          setSheetSubmitStatus({
+            status: 'success',
+            message: '구글 스프레드시트 [시트1]에 성공적으로 기록되었습니다!',
+          });
+        } catch {
+          setSheetSubmitStatus({
+            status: 'error',
+            message: '시트 전송 중 통신 오류가 발생했습니다. (앱스스크립트 배포 설정을 확인하세요)',
+          });
+        }
       }
     } else {
       // Local preview / test simulation

@@ -346,7 +346,7 @@
 
   <script>
     // 구글 앱스 스크립트 웹앱 배포 URL (스프레드시트 실시간 연동)
-    const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbx6_oqW-V4kOUqMyc2o00MaegJ73ov9C3Um14R_UD9FwuKOtPi1mA_Qj9RQbBeo8Hycow/exec";
+    const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxp8qS_78pJXgpWUc9iWJVCs1gJuDpHqbr_LhoArCVYQtXkOZ3fuwx7L_U0sSz_7XdduA/exec";
 
     // Tab Navigation
     const tabBtnLine = document.getElementById('tabBtnLine');
@@ -1164,14 +1164,21 @@
           })
           .submitSpeedQuiz(payload);
       } else if (GOOGLE_SHEET_WEBAPP_URL && GOOGLE_SHEET_WEBAPP_URL.startsWith('http')) {
-        fetch(GOOGLE_SHEET_WEBAPP_URL, {
+        const urlWithParams = `${GOOGLE_SHEET_WEBAPP_URL}${GOOGLE_SHEET_WEBAPP_URL.includes('?') ? '&' : '?'}type=speed_quiz&sheet=${encodeURIComponent('시트2')}&studentId=${encodeURIComponent(payload.studentId)}&studentName=${encodeURIComponent(payload.studentName)}&score=${payload.score}&attemptNumber=${payload.attemptNumber}&correctCount=${payload.correctCount}&totalQuestions=${payload.totalQuestions}&timeSpent=${payload.timeSpent}`;
+        
+        fetch(urlWithParams, {
           method: 'POST',
           mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(payload)
         }).then(() => {
           bannerText.innerText = '✅ 구글 스프레드시트 [시트2]에 성공적으로 기록되었습니다!';
           bannerTime.innerText = new Date().toLocaleTimeString('ko-KR');
+        }).catch(() => {
+          fetch(urlWithParams, { method: 'GET', mode: 'no-cors' }).then(() => {
+            bannerText.innerText = '✅ 구글 스프레드시트 [시트2]에 성공적으로 기록되었습니다!';
+            bannerTime.innerText = new Date().toLocaleTimeString('ko-KR');
+          });
         });
       } else {
         setTimeout(() => {
