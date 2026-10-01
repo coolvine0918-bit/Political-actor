@@ -12,9 +12,16 @@ import { QUIZ_ITEMS, ACTOR_NODES, ROLE_NODES } from './data/quizData';
 import { ConnectionMap, StudentSubmission, GradeResult } from './types';
 import { ConnectionsSvg } from './components/ConnectionsSvg';
 import { ResultModal } from './components/ResultModal';
+import { SpeedQuiz } from './components/SpeedQuiz';
 import { sounds } from './utils/audio';
 
+export const DEFAULT_GAS_URL =
+  'https://script.google.com/macros/s/AKfycbx6_oqW-V4kOUqMyc2o00MaegJ73ov9C3Um14R_UD9FwuKOtPi1mA_Qj9RQbBeo8Hycow/exec';
+
 export default function App() {
+  // Navigation Tab: 'line-quiz' | 'speed-quiz'
+  const [activeTab, setActiveTab] = useState<'line-quiz' | 'speed-quiz'>('line-quiz');
+
   // Student Info
   const [studentId, setStudentId] = useState('');
   const [studentName, setStudentName] = useState('');
@@ -55,9 +62,10 @@ export default function App() {
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [currentSubmission, setCurrentSubmission] = useState<StudentSubmission | null>(null);
 
-  // Google Apps Script Web App URL (stored in localStorage)
+  // Google Apps Script Web App URL (Hardcoded with teacher's deployment URL)
   const [gasUrl, setGasUrl] = useState<string>(() => {
-    return localStorage.getItem('gas_quiz_webhook_url') || '';
+    const saved = localStorage.getItem('gas_quiz_webhook_url');
+    return saved && saved.startsWith('http') ? saved : DEFAULT_GAS_URL;
   });
 
   const [sheetSubmitStatus, setSheetSubmitStatus] = useState<{
@@ -512,8 +520,53 @@ export default function App() {
         </div>
       </header>
 
-      {/* Guide & Controls Strip */}
-      <div className="bg-gradient-to-r from-blue-50 via-slate-50 to-indigo-50 border-b border-slate-200/80 px-4 py-2">
+      {/* Activity Navigation Tabs */}
+      <nav className="bg-white border-b border-slate-200 shadow-2xs">
+        <div className="max-w-7xl mx-auto px-4 flex items-center gap-2 overflow-x-auto">
+          <button
+            onClick={() => setActiveTab('line-quiz')}
+            className={`py-3 px-4 text-xs sm:text-sm font-extrabold border-b-2 flex items-center gap-2 transition whitespace-nowrap cursor-pointer ${
+              activeTab === 'line-quiz'
+                ? 'border-blue-600 text-blue-700 bg-blue-50/40'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+            }`}
+          >
+            <span className="w-5 h-5 rounded-md bg-blue-600 text-white flex items-center justify-center text-[10px] font-black">
+              1
+            </span>
+            <span>정치 주체와 역할 3단 선긋기 퀴즈</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('speed-quiz')}
+            className={`py-3 px-4 text-xs sm:text-sm font-extrabold border-b-2 flex items-center gap-2 transition whitespace-nowrap cursor-pointer ${
+              activeTab === 'speed-quiz'
+                ? 'border-amber-500 text-amber-800 bg-amber-50/40'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+            }`}
+          >
+            <span className="w-5 h-5 rounded-md bg-amber-500 text-white flex items-center justify-center text-[10px] font-black">
+              2
+            </span>
+            <span>시민단체 vs 이익 집단 스피드 퀴즈</span>
+            <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
+              3회 도전 (30초/45초/1분)
+            </span>
+          </button>
+        </div>
+      </nav>
+
+      {activeTab === 'speed-quiz' ? (
+        <SpeedQuiz
+          studentId={studentId}
+          studentName={studentName}
+          soundOn={soundOn}
+          gasUrl={gasUrl}
+        />
+      ) : (
+        <>
+          {/* Guide & Controls Strip */}
+          <div className="bg-gradient-to-r from-blue-50 via-slate-50 to-indigo-50 border-b border-slate-200/80 px-4 py-2">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-2 text-xs sm:text-sm text-slate-700">
           <div className="flex items-center gap-2">
             <span className="flex h-2 w-2 relative">
@@ -561,265 +614,247 @@ export default function App() {
           draggingState={draggingState}
         />
 
-        {/* 3 Columns Layout (사례 - 정치주체 - 역할) */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 relative z-10">
-          
-          {/* ========================================================
-              COLUMN 1: 사례 (Cases)
-             ======================================================== */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b-2 border-blue-500">
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">
+        {/* 3 Columns Line-Matching Board: 사례 - 주체 - 역할 (Strictly 3-Column side-by-side as in sketch) */}
+        <div className="overflow-x-auto pb-4">
+          <div className="min-w-[860px] relative z-10 px-2">
+            
+            {/* Top Column Headers (Matching user sketch labels: 사례 | 주체 | 역할) */}
+            <div className="grid grid-cols-[1.3fr_0.8fr_1.3fr] gap-8 sm:gap-12 pb-3 mb-4 border-b-2 border-slate-300 items-end">
+              <div className="flex items-center gap-2 pl-2">
+                <span className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center text-sm font-black shadow-xs">
                   1
                 </span>
-                <h2 className="font-black text-slate-900 text-base">상황 (사례)</h2>
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                  사례
+                </h2>
+                <span className="text-xs text-slate-400 font-medium ml-1">상황 (1~6번)</span>
               </div>
-              <span className="text-xs text-slate-500 font-medium">6개 실제 사례</span>
-            </div>
 
-            <div className="space-y-3">
-              {QUIZ_ITEMS.map((item) => {
-                const conn = connections[item.id];
-                const isSelected = activeSelection?.type === 'case' && activeSelection.id === item.id;
-                const isCompleted = conn.actorNodeId && conn.roleNodeId;
-                const hasActor = !!conn.actorNodeId;
-
-                return (
-                  <div
-                    key={item.id}
-                    id={`case-card-${item.id}`}
-                    onClick={() => handleCardClick('case', item.id)}
-                    className={`p-4 rounded-2xl bg-white border transition-all duration-150 relative cursor-pointer group shadow-xs ${
-                      isSelected
-                        ? 'ring-2 ring-blue-500 border-transparent shadow-md bg-blue-50/20'
-                        : isCompleted
-                          ? 'border-emerald-200 hover:border-emerald-300'
-                          : 'border-slate-200 hover:border-blue-300 hover:shadow-xs'
-                    }`}
-                  >
-                    {/* Header line of card */}
-                    <div className="flex items-center justify-between mb-2">
-                      <span
-                        className="px-2.5 py-0.5 rounded-lg text-xs font-bold text-white shadow-xs"
-                        style={{ backgroundColor: item.color }}
-                      >
-                        사례 {item.id}
-                      </span>
-
-                      <div className="text-[11px] font-semibold">
-                        {isCompleted ? (
-                          <span className="text-emerald-700 flex items-center gap-1">
-                            <CheckCircle className="w-3.5 h-3.5" /> 연결 완료
-                          </span>
-                        ) : hasActor ? (
-                          <span className="text-blue-600 font-medium">주체 연결됨</span>
-                        ) : (
-                          <span className="text-slate-400">미연결</span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Case Text */}
-                    <p className="text-xs sm:text-sm text-slate-700 font-normal leading-relaxed pr-3">
-                      {item.caseText}
-                    </p>
-
-                    {/* Right Connector Handle */}
-                    <div
-                      id={`case-dot-${item.id}`}
-                      onPointerDown={(e) =>
-                        handleDotPointerDown(e, 'case', item.id, `case-dot-${item.id}`, item.color)
-                      }
-                      title="클릭하거나 드래그하여 정치 주체에 연결"
-                      className="absolute -right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full border-2 border-white shadow-sm flex items-center justify-center cursor-pointer transition-transform hover:scale-125 z-20"
-                      style={{
-                        backgroundColor: hasActor ? item.color : '#cbd5e1',
-                      }}
-                    >
-                      <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* ========================================================
-              COLUMN 2: 정치 주체 (Actors)
-             ======================================================== */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b-2 border-indigo-500">
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs font-bold">
+              <div className="flex items-center justify-center gap-2 text-center">
+                <span className="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-sm font-black shadow-xs">
                   2
                 </span>
-                <h2 className="font-black text-slate-900 text-base">정치 주체</h2>
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                  주체
+                </h2>
+                <span className="text-xs text-slate-400 font-medium ml-1">정치 주체</span>
               </div>
-              <span className="text-xs text-slate-500 font-medium">선택 및 연결</span>
+
+              <div className="flex items-center justify-end gap-2 pr-2">
+                <span className="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-sm font-black shadow-xs">
+                  3
+                </span>
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                  역할
+                </h2>
+                <span className="text-xs text-slate-400 font-medium ml-1">정치 주체의 역할</span>
+              </div>
             </div>
 
-            <div className="space-y-3">
-              {ACTOR_NODES.map((actor, idx) => {
-                const isSelected = activeSelection?.type === 'actor' && activeSelection.id === actor.id;
+            {/* 6 Aligned Rows: in each row, [사례 Box] [주체 Box] [역할 Box] are perfectly aligned at the exact same height! */}
+            <div className="space-y-4">
+              {QUIZ_ITEMS.map((item, idx) => {
+                const actor = ACTOR_NODES[idx];
+                const role = ROLE_NODES[idx];
 
-                // Find which cases are connected to this actor
+                // Case State
+                const conn = connections[item.id];
+                const isCaseSelected = activeSelection?.type === 'case' && activeSelection.id === item.id;
+                const isCaseCompleted = conn.actorNodeId && conn.roleNodeId;
+                const hasActor = !!conn.actorNodeId;
+
+                // Actor State
+                const isActorSelected = activeSelection?.type === 'actor' && activeSelection.id === actor.id;
                 const connectedCaseIds = Object.keys(connections)
                   .map(Number)
                   .filter((cId) => connections[cId].actorNodeId === actor.id);
-
                 const firstCase = connectedCaseIds.length > 0 ? QUIZ_ITEMS.find((q) => q.id === connectedCaseIds[0]) : null;
 
-                return (
-                  <div
-                    key={actor.id}
-                    id={`actor-card-${actor.id}`}
-                    data-droptarget="true"
-                    data-droptype="actor"
-                    data-dropid={actor.id}
-                    onClick={() => handleCardClick('actor', actor.id)}
-                    className={`p-4 rounded-2xl bg-white border transition-all duration-150 relative cursor-pointer min-h-[96px] flex flex-col justify-center items-center text-center shadow-xs ${
-                      isSelected
-                        ? 'ring-2 ring-indigo-500 border-transparent shadow-md bg-indigo-50/20'
-                        : connectedCaseIds.length > 0
-                          ? 'border-indigo-200'
-                          : 'border-slate-200 hover:border-indigo-300 hover:shadow-xs'
-                    }`}
-                  >
-                    {/* Left Connector Handle (Receives from Case) */}
-                    <div
-                      id={`actor-dot-left-${actor.id}`}
-                      title="사례의 연결을 받는 핸들"
-                      className="absolute -left-2.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full border-2 border-white shadow-sm flex items-center justify-center cursor-pointer transition-transform hover:scale-125 z-20"
-                      style={{
-                        backgroundColor: firstCase ? firstCase.color : '#cbd5e1',
-                      }}
-                    >
-                      <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
-                    </div>
-
-                    <div className="space-y-1">
-                      <div className="flex items-center justify-center gap-1.5">
-                        <span className="text-[11px] font-semibold text-slate-400">
-                          선택지 {idx + 1}
-                        </span>
-                        {connectedCaseIds.length > 0 && (
-                          <span
-                            className="px-1.5 py-0.2 rounded text-[10px] font-bold text-white"
-                            style={{ backgroundColor: firstCase?.color }}
-                          >
-                            사례 {connectedCaseIds.join(', ')} 연결됨
-                          </span>
-                        )}
-                      </div>
-
-                      <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
-                        {actor.text}
-                      </h3>
-                    </div>
-
-                    {/* Right Connector Handle (Sends to Role) */}
-                    <div
-                      id={`actor-dot-right-${actor.id}`}
-                      onPointerDown={(e) =>
-                        handleDotPointerDown(
-                          e,
-                          'actor',
-                          actor.id,
-                          `actor-dot-right-${actor.id}`,
-                          firstCase ? firstCase.color : '#4f46e5'
-                        )
-                      }
-                      title="클릭하거나 드래그하여 역할에 연결"
-                      className="absolute -right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full border-2 border-white shadow-sm flex items-center justify-center cursor-pointer transition-transform hover:scale-125 z-20"
-                      style={{
-                        backgroundColor: firstCase?.color || '#cbd5e1',
-                      }}
-                    >
-                      <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* ========================================================
-              COLUMN 3: 역할 (Roles)
-             ======================================================== */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b-2 border-emerald-500">
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">
-                  3
-                </span>
-                <h2 className="font-black text-slate-900 text-base">정치 주체의 역할</h2>
-              </div>
-              <span className="text-xs text-slate-500 font-medium">최종 매칭</span>
-            </div>
-
-            <div className="space-y-3">
-              {ROLE_NODES.map((role, idx) => {
-                const isSelected = activeSelection?.type === 'role' && activeSelection.id === role.id;
-
-                // Find which case is connected to this role
+                // Role State
+                const isRoleSelected = activeSelection?.type === 'role' && activeSelection.id === role.id;
                 const connectedCaseId = Object.keys(connections)
                   .map(Number)
                   .find((cId) => connections[cId].roleNodeId === role.id);
-
                 const connectedCase = connectedCaseId ? QUIZ_ITEMS.find((q) => q.id === connectedCaseId) : null;
 
                 return (
                   <div
-                    key={role.id}
-                    id={`role-card-${role.id}`}
-                    data-droptarget="true"
-                    data-droptype="role"
-                    data-dropid={role.id}
-                    onClick={() => handleCardClick('role', role.id)}
-                    className={`p-4 rounded-2xl bg-white border transition-all duration-150 relative cursor-pointer min-h-[96px] flex flex-col justify-center shadow-xs ${
-                      isSelected
-                        ? 'ring-2 ring-emerald-500 border-transparent shadow-md bg-emerald-50/20'
-                        : connectedCase
+                    key={item.id}
+                    className="grid grid-cols-[1.3fr_0.8fr_1.3fr] gap-8 sm:gap-12 items-stretch"
+                  >
+                    {/* 1. 사례 Card (Left Box) */}
+                    <div
+                      id={`case-card-${item.id}`}
+                      onClick={() => handleCardClick('case', item.id)}
+                      className={`p-4 rounded-2xl bg-white border transition-all duration-150 relative cursor-pointer group shadow-xs flex flex-col justify-between ${
+                        isCaseSelected
+                          ? 'ring-2 ring-blue-500 border-transparent shadow-md bg-blue-50/20'
+                          : isCaseCompleted
+                          ? 'border-emerald-200 hover:border-emerald-300'
+                          : 'border-slate-200 hover:border-blue-300 hover:shadow-xs'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span
+                          className="px-2.5 py-0.5 rounded-lg text-xs font-bold text-white shadow-xs"
+                          style={{ backgroundColor: item.color }}
+                        >
+                          사례 {item.id}
+                        </span>
+
+                        <div className="text-[11px] font-semibold">
+                          {isCaseCompleted ? (
+                            <span className="text-emerald-700 flex items-center gap-1">
+                              <CheckCircle className="w-3.5 h-3.5" /> 연결 완료
+                            </span>
+                          ) : hasActor ? (
+                            <span className="text-blue-600 font-medium">주체 연결됨</span>
+                          ) : (
+                            <span className="text-slate-400">미연결</span>
+                          )}
+                        </div>
+                      </div>
+
+                      <p className="text-xs sm:text-sm text-slate-700 font-normal leading-relaxed pr-3">
+                        {item.caseText}
+                      </p>
+
+                      {/* Right Connector Dot */}
+                      <div
+                        id={`case-dot-${item.id}`}
+                        onPointerDown={(e) =>
+                          handleDotPointerDown(e, 'case', item.id, `case-dot-${item.id}`, item.color)
+                        }
+                        title="클릭하거나 드래그하여 정치 주체에 연결"
+                        className="absolute -right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full border-2 border-white shadow-sm flex items-center justify-center cursor-pointer transition-transform hover:scale-125 z-20"
+                        style={{
+                          backgroundColor: hasActor ? item.color : '#cbd5e1',
+                        }}
+                      >
+                        <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
+                      </div>
+                    </div>
+
+                    {/* 2. 주체 Card (Middle Box) */}
+                    <div
+                      id={`actor-card-${actor.id}`}
+                      data-droptarget="true"
+                      data-droptype="actor"
+                      data-dropid={actor.id}
+                      onClick={() => handleCardClick('actor', actor.id)}
+                      className={`p-4 rounded-2xl bg-white border transition-all duration-150 relative cursor-pointer flex flex-col justify-center items-center text-center shadow-xs ${
+                        isActorSelected
+                          ? 'ring-2 ring-indigo-500 border-transparent shadow-md bg-indigo-50/20'
+                          : connectedCaseIds.length > 0
+                          ? 'border-indigo-200'
+                          : 'border-slate-200 hover:border-indigo-300 hover:shadow-xs'
+                      }`}
+                    >
+                      {/* Left Connector Handle (Receives from Case) */}
+                      <div
+                        id={`actor-dot-left-${actor.id}`}
+                        title="사례의 연결을 받는 핸들"
+                        className="absolute -left-2.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full border-2 border-white shadow-sm flex items-center justify-center cursor-pointer transition-transform hover:scale-125 z-20"
+                        style={{
+                          backgroundColor: firstCase ? firstCase.color : '#cbd5e1',
+                        }}
+                      >
+                        <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-center gap-1.5">
+                          <span className="text-[11px] font-semibold text-slate-400">
+                            주체 {idx + 1}
+                          </span>
+                          {connectedCaseIds.length > 0 && (
+                            <span
+                              className="px-1.5 py-0.2 rounded text-[10px] font-bold text-white"
+                              style={{ backgroundColor: firstCase?.color }}
+                            >
+                              사례 {connectedCaseIds.join(', ')} 연결됨
+                            </span>
+                          )}
+                        </div>
+
+                        <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+                          {actor.text}
+                        </h3>
+                      </div>
+
+                      {/* Right Connector Handle (Sends to Role) */}
+                      <div
+                        id={`actor-dot-right-${actor.id}`}
+                        onPointerDown={(e) =>
+                          handleDotPointerDown(
+                            e,
+                            'actor',
+                            actor.id,
+                            `actor-dot-right-${actor.id}`,
+                            firstCase ? firstCase.color : '#4f46e5'
+                          )
+                        }
+                        title="클릭하거나 드래그하여 역할에 연결"
+                        className="absolute -right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full border-2 border-white shadow-sm flex items-center justify-center cursor-pointer transition-transform hover:scale-125 z-20"
+                        style={{
+                          backgroundColor: firstCase?.color || '#cbd5e1',
+                        }}
+                      >
+                        <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
+                      </div>
+                    </div>
+
+                    {/* 3. 역할 Card (Right Box) */}
+                    <div
+                      id={`role-card-${role.id}`}
+                      data-droptarget="true"
+                      data-droptype="role"
+                      data-dropid={role.id}
+                      onClick={() => handleCardClick('role', role.id)}
+                      className={`p-4 rounded-2xl bg-white border transition-all duration-150 relative cursor-pointer flex flex-col justify-between shadow-xs ${
+                        isRoleSelected
+                          ? 'ring-2 ring-emerald-500 border-transparent shadow-md bg-emerald-50/20'
+                          : connectedCase
                           ? 'border-emerald-200'
                           : 'border-slate-200 hover:border-emerald-300 hover:shadow-xs'
-                    }`}
-                  >
-                    {/* Left Connector Handle (Receives from Actor) */}
-                    <div
-                      id={`role-dot-${role.id}`}
-                      title="주체의 역할을 받는 핸들"
-                      className="absolute -left-2.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full border-2 border-white shadow-sm flex items-center justify-center cursor-pointer transition-transform hover:scale-125 z-20"
-                      style={{
-                        backgroundColor: connectedCase ? connectedCase.color : '#cbd5e1',
-                      }}
+                      }`}
                     >
-                      <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
-                    </div>
+                      {/* Left Connector Handle (Receives from Actor) */}
+                      <div
+                        id={`role-dot-${role.id}`}
+                        title="주체의 역할을 받는 핸들"
+                        className="absolute -left-2.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full border-2 border-white shadow-sm flex items-center justify-center cursor-pointer transition-transform hover:scale-125 z-20"
+                        style={{
+                          backgroundColor: connectedCase ? connectedCase.color : '#cbd5e1',
+                        }}
+                      >
+                        <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
+                      </div>
 
-                    <div className="flex items-center justify-between mb-1.5 pl-3">
-                      <span className="text-[11px] font-semibold text-slate-400">
-                        역할 설명 {String.fromCharCode(65 + idx)}
-                      </span>
-                      {connectedCase && (
-                        <span
-                          className="px-2 py-0.2 rounded text-[10px] font-bold text-white"
-                          style={{ backgroundColor: connectedCase.color }}
-                        >
-                          사례 {connectedCase.id} 매칭됨
+                      <div className="flex items-center justify-between mb-1.5 pl-3">
+                        <span className="text-[11px] font-semibold text-slate-400">
+                          역할 설명 {String.fromCharCode(65 + idx)}
                         </span>
-                      )}
-                    </div>
+                        {connectedCase && (
+                          <span
+                            className="px-2 py-0.2 rounded text-[10px] font-bold text-white"
+                            style={{ backgroundColor: connectedCase.color }}
+                          >
+                            사례 {connectedCase.id} 매칭됨
+                          </span>
+                        )}
+                      </div>
 
-                    <p className="text-xs sm:text-sm text-slate-700 font-normal leading-relaxed pl-3 pr-1">
-                      {role.text}
-                    </p>
+                      <p className="text-xs sm:text-sm text-slate-700 font-normal leading-relaxed pl-3 pr-1">
+                        {role.text}
+                      </p>
+                    </div>
                   </div>
                 );
               })}
             </div>
-          </div>
 
+          </div>
         </div>
 
         {/* Bottom Submission Bar */}
@@ -873,6 +908,8 @@ export default function App() {
           sheetSubmitStatus={sheetSubmitStatus}
         />
       )}
-    </div>
+    </>
+  )}
+</div>
   );
 }
