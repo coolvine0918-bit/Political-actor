@@ -488,20 +488,12 @@ export default function App() {
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
           
-          {/* Logo & Subject Info */}
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-lg shadow-sm">
-              政
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-blue-100 text-blue-800">
-                  중·고등 사회 탐구
-                </span>
-                <span className="text-[10px] text-slate-400 font-medium">단원: 정치 과정과 정치 주체</span>
-              </div>
-              <h1 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-tight">
-                정치 주체와 역할 3단 선긋기 퀴즈
+          {/* Header Title with prominent blue background highlight */}
+          <div className="flex items-center">
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 text-white shadow-sm border border-blue-400/30">
+              <span className="w-2 h-2 rounded-full bg-cyan-300 animate-pulse shrink-0" />
+              <h1 className="text-base sm:text-lg font-black tracking-tight leading-normal text-white drop-shadow-2xs">
+                정치 주체의 역할과 정치과정
               </h1>
             </div>
           </div>
@@ -622,15 +614,15 @@ export default function App() {
             onClick={() => setActiveTab('case-quiz')}
             className={`py-2.5 px-3.5 text-xs sm:text-sm font-extrabold border-b-2 flex items-center gap-2 transition whitespace-nowrap cursor-pointer rounded-t-lg ${
               activeTab === 'case-quiz'
-                ? 'border-rose-600 text-rose-800 bg-rose-50/50 shadow-2xs'
+                ? 'border-pink-500 text-pink-700 bg-pink-50/60 shadow-2xs'
                 : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
             }`}
           >
-            <span className="w-5 h-5 rounded-md bg-rose-600 text-white flex items-center justify-center text-[10px] font-black">
+            <span className="w-5 h-5 rounded-md bg-pink-500 text-white flex items-center justify-center text-[10px] font-black">
               5
             </span>
             <span>실전 사례 중심 평가 (10제)</span>
-            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-pink-100 text-pink-700">
               시트5
             </span>
           </button>

@@ -281,7 +281,7 @@ function submitQuiz5(data) {
       var headers = ['학번', '이름', '점수', '제출일시', '맞힌 개수', '세부 채점 내역'];
       sheet5.appendRow(headers);
       var headerRange = sheet5.getRange(1, 1, 1, headers.length);
-      headerRange.setBackground('#e11d48'); // Rose / Crimson
+      headerRange.setBackground('#ec4899'); // Pink
       headerRange.setFontColor('#ffffff');
       headerRange.setFontWeight('bold');
       headerRange.setHorizontalAlignment('center');

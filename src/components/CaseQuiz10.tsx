@@ -193,30 +193,30 @@ export const CaseQuiz10: React.FC<CaseQuiz10Props> = ({
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
-      {/* Activity Header Banner */}
-      <div className="bg-gradient-to-r from-rose-600 via-pink-600 to-red-700 rounded-3xl p-6 sm:p-8 text-white shadow-lg mb-8 relative overflow-hidden">
+      {/* Activity Header Banner - Lovely Pink Gradient */}
+      <div className="bg-gradient-to-r from-pink-500 via-rose-400 to-pink-600 rounded-3xl p-6 sm:p-8 text-white shadow-lg mb-8 relative overflow-hidden">
         <div className="absolute right-0 bottom-0 translate-x-8 translate-y-8 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-rose-100 text-xs font-bold tracking-wide mb-2 backdrop-blur-xs">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/25 text-pink-50 text-xs font-bold tracking-wide mb-2 backdrop-blur-xs">
               <FileText className="w-3.5 h-3.5" />
               <span>활동 5 • 개념 평가 및 실전 사례 중심</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-black tracking-tight drop-shadow-2xs">
               정치 과정과 정치 주체 실전 평가 (10문항)
             </h2>
-            <p className="text-rose-100 text-xs sm:text-sm mt-1">
+            <p className="text-pink-100 text-xs sm:text-sm mt-1 font-medium">
               청소년 대중교통 요금, 일회용 플라스틱 규제, 전동 킥보드 안전 관리 등 실전 3대 시나리오를 심층 분석합니다.
             </p>
           </div>
 
-          <div className="bg-white/15 backdrop-blur-md rounded-2xl px-5 py-3 border border-white/20 flex items-center justify-between md:flex-col md:items-end gap-1 shrink-0">
-            <span className="text-rose-100 text-xs font-semibold">진행 상황</span>
+          <div className="bg-white/20 backdrop-blur-md rounded-2xl px-5 py-3 border border-white/25 flex items-center justify-between md:flex-col md:items-end gap-1 shrink-0">
+            <span className="text-pink-100 text-xs font-semibold">진행 상황</span>
             <div className="flex items-baseline gap-1">
               <span className="text-2xl font-black">{answeredCount}</span>
-              <span className="text-rose-200 text-sm font-bold">/ {totalCount}</span>
+              <span className="text-pink-200 text-sm font-bold">/ {totalCount}</span>
             </div>
-            <span className="text-[11px] text-rose-200">
+            <span className="text-[11px] text-pink-200">
               {answeredCount === totalCount ? '✨ 모든 문제 풀이 완료' : '문제를 풀고 정답을 선택하세요'}
             </span>
           </div>
@@ -224,14 +224,14 @@ export const CaseQuiz10: React.FC<CaseQuiz10Props> = ({
       </div>
 
       {/* Collapsible Concept Table Guide */}
-      <div className="bg-white rounded-2xl border border-rose-200 shadow-xs mb-8 overflow-hidden">
+      <div className="bg-white rounded-2xl border border-pink-200 shadow-xs mb-8 overflow-hidden">
         <button
           type="button"
           onClick={() => setShowTableGuide(!showTableGuide)}
-          className="w-full px-5 py-4 flex items-center justify-between bg-rose-50/50 hover:bg-rose-50 transition text-left cursor-pointer"
+          className="w-full px-5 py-4 flex items-center justify-between bg-pink-50/50 hover:bg-pink-50 transition text-left cursor-pointer"
         >
           <div className="flex items-center gap-2.5">
-            <BookOpen className="w-4 h-4 text-rose-600" />
+            <BookOpen className="w-4 h-4 text-pink-600" />
             <span className="font-bold text-slate-800 text-xs sm:text-sm">
               [개념 핵심 요약] 정치 과정 5단계 및 공식/비공식 정치 주체 구분표
             </span>
@@ -244,10 +244,10 @@ export const CaseQuiz10: React.FC<CaseQuiz10Props> = ({
         </button>
 
         {showTableGuide && (
-          <div className="p-5 border-t border-rose-100 bg-white overflow-x-auto">
+          <div className="p-5 border-t border-pink-100 bg-white overflow-x-auto">
             <table className="w-full text-xs text-left border-collapse">
               <thead>
-                <tr className="bg-rose-100/60 text-rose-950 font-bold border-b border-rose-200">
+                <tr className="bg-pink-100/70 text-pink-950 font-bold border-b border-pink-200">
                   <th className="p-2.5 rounded-l-lg">정치 과정 단계</th>
                   <th className="p-2.5">주요 역할 및 내용</th>
                   <th className="p-2.5">대표적 정치 주체</th>
@@ -280,7 +280,7 @@ export const CaseQuiz10: React.FC<CaseQuiz10Props> = ({
                   <td className="p-2.5 text-emerald-700 font-black">공식적 주체</td>
                 </tr>
                 <tr className="hover:bg-slate-50">
-                  <td className="p-2.5 font-bold text-rose-700">5. 정책 평가</td>
+                  <td className="p-2.5 font-bold text-pink-600">5. 정책 평가</td>
                   <td className="p-2.5">정책의 성과, 문제점, 영향 등을 측정 및 분석 (환류)</td>
                   <td className="p-2.5 font-medium">연구기관, 시민단체, 언론 등</td>
                   <td className="p-2.5 text-slate-600 font-semibold">공식/비공식 복합</td>
@@ -293,18 +293,18 @@ export const CaseQuiz10: React.FC<CaseQuiz10Props> = ({
 
       {/* Result Card when Submitted */}
       {isSubmitted && (
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-rose-500 shadow-xl mb-8 animate-fade-in">
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-pink-400 shadow-xl mb-8 animate-fade-in">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pb-6 border-b border-slate-100">
             <div className="flex items-center gap-4">
               <div
                 className={`w-16 h-16 rounded-2xl flex items-center justify-center ${
-                  score >= 80 ? 'bg-rose-100 text-rose-600' : 'bg-amber-100 text-amber-600'
+                  score >= 80 ? 'bg-pink-100 text-pink-600' : 'bg-amber-100 text-amber-600'
                 }`}
               >
                 <Award className="w-9 h-9" />
               </div>
               <div>
-                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
+                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-pink-50 text-pink-700 border border-pink-200">
                   활동 5 채점 완료
                 </span>
                 <h3 className="text-2xl font-black text-slate-800 mt-1">
@@ -319,7 +319,7 @@ export const CaseQuiz10: React.FC<CaseQuiz10Props> = ({
             <div className="flex items-center gap-4">
               <div className="text-right">
                 <span className="text-xs font-bold text-slate-400 block">최종 점수</span>
-                <span className="text-4xl font-black text-rose-600 tracking-tight">
+                <span className="text-4xl font-black text-pink-600 tracking-tight">
                   {score}
                   <span className="text-xl font-bold text-slate-400">점</span>
                 </span>
@@ -379,10 +379,10 @@ export const CaseQuiz10: React.FC<CaseQuiz10Props> = ({
               className={`bg-white rounded-2xl border transition-all p-5 sm:p-6 shadow-xs ${
                 isSubmitted
                   ? isCorrect
-                    ? 'border-rose-300 bg-rose-50/10'
+                    ? 'border-pink-300 bg-pink-50/10'
                     : 'border-slate-300 bg-slate-50/10'
                   : selected
-                  ? 'border-rose-300 ring-1 ring-rose-200'
+                  ? 'border-pink-300 ring-1 ring-pink-200'
                   : 'border-slate-200 hover:border-slate-300'
               }`}
             >
@@ -393,10 +393,10 @@ export const CaseQuiz10: React.FC<CaseQuiz10Props> = ({
                     className={`w-7 h-7 rounded-xl flex items-center justify-center font-black text-xs shrink-0 ${
                       isSubmitted
                         ? isCorrect
-                          ? 'bg-rose-600 text-white'
+                          ? 'bg-pink-500 text-white'
                           : 'bg-slate-600 text-white'
                         : selected
-                        ? 'bg-rose-600 text-white'
+                        ? 'bg-pink-500 text-white'
                         : 'bg-slate-100 text-slate-700'
                     }`}
                   >
@@ -412,7 +412,7 @@ export const CaseQuiz10: React.FC<CaseQuiz10Props> = ({
                     className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-black shrink-0 ${
                       isCorrect
                         ? 'bg-emerald-100 text-emerald-700 border border-emerald-300'
-                        : 'bg-rose-100 text-rose-700 border border-rose-300'
+                        : 'bg-pink-100 text-pink-700 border border-pink-200'
                     }`}
                   >
                     {isCorrect ? (
@@ -447,14 +447,14 @@ export const CaseQuiz10: React.FC<CaseQuiz10Props> = ({
 
                   if (isSubmitted) {
                     if (isRightAnswer) {
-                      optClass = 'border-rose-500 bg-rose-50 text-rose-950 font-bold';
+                      optClass = 'border-pink-500 bg-pink-50 text-pink-950 font-bold';
                     } else if (isUserChosen && !isCorrect) {
                       optClass = 'border-slate-300 bg-slate-100 text-slate-500 font-medium line-through';
                     } else {
                       optClass = 'border-slate-100 bg-slate-50/50 text-slate-400 opacity-80';
                     }
                   } else if (isUserChosen) {
-                    optClass = 'border-rose-600 bg-rose-50/70 text-rose-950 font-bold shadow-2xs';
+                    optClass = 'border-pink-500 bg-pink-50/70 text-pink-950 font-bold shadow-2xs';
                   }
 
                   return (
@@ -468,9 +468,9 @@ export const CaseQuiz10: React.FC<CaseQuiz10Props> = ({
                       <span
                         className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${
                           isSubmitted && isRightAnswer
-                            ? 'bg-rose-600 text-white'
+                            ? 'bg-pink-500 text-white'
                             : isUserChosen
-                            ? 'bg-rose-600 text-white'
+                            ? 'bg-pink-500 text-white'
                             : 'bg-slate-100 text-slate-600'
                         }`}
                       >
@@ -478,7 +478,7 @@ export const CaseQuiz10: React.FC<CaseQuiz10Props> = ({
                       </span>
                       <span className="flex-1">{optText}</span>
                       {isSubmitted && isRightAnswer && (
-                        <span className="text-[11px] font-black text-rose-700 bg-rose-100/80 px-2 py-0.5 rounded-md shrink-0">
+                        <span className="text-[11px] font-black text-pink-700 bg-pink-100/80 px-2 py-0.5 rounded-md shrink-0">
                           정답
                         </span>
                       )}
@@ -491,7 +491,7 @@ export const CaseQuiz10: React.FC<CaseQuiz10Props> = ({
               {isSubmitted && (
                 <div className="mt-4 pt-3.5 border-t border-slate-100 bg-slate-50/80 rounded-xl p-3 text-xs leading-relaxed">
                   <div className="flex items-center gap-1.5 font-bold text-slate-700 mb-1">
-                    <BookOpen className="w-3.5 h-3.5 text-rose-600" />
+                    <BookOpen className="w-3.5 h-3.5 text-pink-600" />
                     <span>정답 및 해설 (정답: {CIRCLE_NUMBERS[item.answer - 1]})</span>
                   </div>
                   <p className="text-slate-600 pl-5">{item.explanation}</p>
@@ -507,7 +507,7 @@ export const CaseQuiz10: React.FC<CaseQuiz10Props> = ({
         <div className="sticky bottom-4 mt-8 bg-white/95 backdrop-blur-md rounded-2xl p-4 border border-slate-200 shadow-xl flex items-center justify-between gap-4 z-20">
           <div>
             <span className="text-xs text-slate-500 font-medium block">
-              답안 선택 완료: <strong className="text-rose-700 font-bold">{answeredCount}</strong> / {totalCount}
+              답안 선택 완료: <strong className="text-pink-700 font-bold">{answeredCount}</strong> / {totalCount}
             </span>
             <span className="text-[11px] text-slate-400">
               제출을 누르면 즉시 자동 채점 및 구글 시트 5에 기록됩니다.
@@ -517,7 +517,7 @@ export const CaseQuiz10: React.FC<CaseQuiz10Props> = ({
           <button
             type="button"
             onClick={handleSubmit}
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white font-extrabold text-sm shadow-md hover:shadow-lg transition flex items-center gap-2 cursor-pointer"
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-pink-500 via-pink-600 to-rose-400 hover:from-pink-600 hover:to-pink-700 text-white font-extrabold text-sm shadow-md hover:shadow-lg transition flex items-center gap-2 cursor-pointer"
           >
             <Send className="w-4 h-4" />
             최종 제출 및 채점하기
