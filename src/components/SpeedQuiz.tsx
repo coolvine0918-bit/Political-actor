@@ -259,8 +259,8 @@ export function SpeedQuiz({ studentId, studentName, soundOn, gasUrl }: SpeedQuiz
 
     // Case 2: External Webhook POST (Directly to teacher's deployed Apps Script)
     const targetUrl =
-      (gasUrl && !gasUrl.includes('AKfycbx6_oqW') ? gasUrl : null) ||
-      'https://script.google.com/macros/s/AKfycbxp8qS_78pJXgpWUc9iWJVCs1gJuDpHqbr_LhoArCVYQtXkOZ3fuwx7L_U0sSz_7XdduA/exec';
+      (gasUrl && gasUrl.includes('AKfycbzfEar4EvRv2oWcgiew') ? gasUrl : null) ||
+      'https://script.google.com/macros/s/AKfycbzfEar4EvRv2oWcgiew-eO3FmTZdOZntCqGKa2iVeRqsnBiFQy042YRa9A4QPHc-wobvA/exec';
 
     if (targetUrl && targetUrl.startsWith('http')) {
       const urlWithParams = `${targetUrl}${

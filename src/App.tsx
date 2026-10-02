@@ -13,14 +13,19 @@ import { ConnectionMap, StudentSubmission, GradeResult } from './types';
 import { ConnectionsSvg } from './components/ConnectionsSvg';
 import { ResultModal } from './components/ResultModal';
 import { SpeedQuiz } from './components/SpeedQuiz';
+import { ChoiceQuiz20 } from './components/ChoiceQuiz20';
+import { ProcessQuiz10 } from './components/ProcessQuiz10';
+import { CaseQuiz10 } from './components/CaseQuiz10';
 import { sounds } from './utils/audio';
 
 export const DEFAULT_GAS_URL =
-  'https://script.google.com/macros/s/AKfycbxp8qS_78pJXgpWUc9iWJVCs1gJuDpHqbr_LhoArCVYQtXkOZ3fuwx7L_U0sSz_7XdduA/exec';
+  'https://script.google.com/macros/s/AKfycbzfEar4EvRv2oWcgiew-eO3FmTZdOZntCqGKa2iVeRqsnBiFQy042YRa9A4QPHc-wobvA/exec';
 
 export default function App() {
-  // Navigation Tab: 'line-quiz' | 'speed-quiz'
-  const [activeTab, setActiveTab] = useState<'line-quiz' | 'speed-quiz'>('line-quiz');
+  // Navigation Tab: 'line-quiz' | 'speed-quiz' | 'choice-quiz' | 'process-quiz' | 'case-quiz'
+  const [activeTab, setActiveTab] = useState<
+    'line-quiz' | 'speed-quiz' | 'choice-quiz' | 'process-quiz' | 'case-quiz'
+  >('line-quiz');
 
   // Student Info
   const [studentId, setStudentId] = useState('');
@@ -65,8 +70,8 @@ export default function App() {
   // Google Apps Script Web App URL (Hardcoded with teacher's new deployment URL)
   const [gasUrl, setGasUrl] = useState<string>(() => {
     const saved = localStorage.getItem('gas_quiz_webhook_url');
-    // If empty or old URL, auto-migrate to the new deployed URL
-    if (!saved || saved.includes('AKfycbx6_oqW') || !saved.startsWith('http')) {
+    // If empty or any old URL, auto-migrate to the new deployed URL
+    if (!saved || !saved.includes('AKfycbzfEar4EvRv2oWcgiew') || !saved.startsWith('http')) {
       localStorage.setItem('gas_quiz_webhook_url', DEFAULT_GAS_URL);
       return DEFAULT_GAS_URL;
     }
@@ -544,48 +549,128 @@ export default function App() {
 
       {/* Activity Navigation Tabs */}
       <nav className="bg-white border-b border-slate-200 shadow-2xs">
-        <div className="max-w-7xl mx-auto px-4 flex items-center gap-2 overflow-x-auto">
+        <div className="max-w-7xl mx-auto px-4 flex items-center gap-2 overflow-x-auto py-1">
           <button
             onClick={() => setActiveTab('line-quiz')}
-            className={`py-3 px-4 text-xs sm:text-sm font-extrabold border-b-2 flex items-center gap-2 transition whitespace-nowrap cursor-pointer ${
+            className={`py-2.5 px-3.5 text-xs sm:text-sm font-extrabold border-b-2 flex items-center gap-2 transition whitespace-nowrap cursor-pointer rounded-t-lg ${
               activeTab === 'line-quiz'
-                ? 'border-blue-600 text-blue-700 bg-blue-50/40'
+                ? 'border-blue-600 text-blue-700 bg-blue-50/50 shadow-2xs'
                 : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
             }`}
           >
             <span className="w-5 h-5 rounded-md bg-blue-600 text-white flex items-center justify-center text-[10px] font-black">
               1
             </span>
-            <span>정치 주체와 역할 3단 선긋기 퀴즈</span>
+            <span>정치 주체와 역할 3단 선긋기</span>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800">
+              시트1
+            </span>
           </button>
 
           <button
             onClick={() => setActiveTab('speed-quiz')}
-            className={`py-3 px-4 text-xs sm:text-sm font-extrabold border-b-2 flex items-center gap-2 transition whitespace-nowrap cursor-pointer ${
+            className={`py-2.5 px-3.5 text-xs sm:text-sm font-extrabold border-b-2 flex items-center gap-2 transition whitespace-nowrap cursor-pointer rounded-t-lg ${
               activeTab === 'speed-quiz'
-                ? 'border-amber-500 text-amber-800 bg-amber-50/40'
+                ? 'border-amber-500 text-amber-800 bg-amber-50/50 shadow-2xs'
                 : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
             }`}
           >
             <span className="w-5 h-5 rounded-md bg-amber-500 text-white flex items-center justify-center text-[10px] font-black">
               2
             </span>
-            <span>시민단체 vs 이익 집단 스피드 퀴즈</span>
-            <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
-              3회 도전 (30초/45초/1분)
+            <span>시민단체 vs 이익집단 스피드 퀴즈</span>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
+              시트2
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('choice-quiz')}
+            className={`py-2.5 px-3.5 text-xs sm:text-sm font-extrabold border-b-2 flex items-center gap-2 transition whitespace-nowrap cursor-pointer rounded-t-lg ${
+              activeTab === 'choice-quiz'
+                ? 'border-emerald-600 text-emerald-800 bg-emerald-50/50 shadow-2xs'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+            }`}
+          >
+            <span className="w-5 h-5 rounded-md bg-emerald-600 text-white flex items-center justify-center text-[10px] font-black">
+              3
+            </span>
+            <span>정치주체 역할과 정치과정 (20제)</span>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+              시트3
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('process-quiz')}
+            className={`py-2.5 px-3.5 text-xs sm:text-sm font-extrabold border-b-2 flex items-center gap-2 transition whitespace-nowrap cursor-pointer rounded-t-lg ${
+              activeTab === 'process-quiz'
+                ? 'border-purple-600 text-purple-800 bg-purple-50/50 shadow-2xs'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+            }`}
+          >
+            <span className="w-5 h-5 rounded-md bg-purple-600 text-white flex items-center justify-center text-[10px] font-black">
+              4
+            </span>
+            <span>정치과정 단계별 이해 평가 (10제)</span>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800">
+              시트4
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('case-quiz')}
+            className={`py-2.5 px-3.5 text-xs sm:text-sm font-extrabold border-b-2 flex items-center gap-2 transition whitespace-nowrap cursor-pointer rounded-t-lg ${
+              activeTab === 'case-quiz'
+                ? 'border-rose-600 text-rose-800 bg-rose-50/50 shadow-2xs'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+            }`}
+          >
+            <span className="w-5 h-5 rounded-md bg-rose-600 text-white flex items-center justify-center text-[10px] font-black">
+              5
+            </span>
+            <span>실전 사례 중심 평가 (10제)</span>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">
+              시트5
             </span>
           </button>
         </div>
       </nav>
 
-      {activeTab === 'speed-quiz' ? (
+      {activeTab === 'speed-quiz' && (
         <SpeedQuiz
           studentId={studentId}
           studentName={studentName}
           soundOn={soundOn}
           gasUrl={gasUrl}
         />
-      ) : (
+      )}
+
+      {activeTab === 'choice-quiz' && (
+        <ChoiceQuiz20
+          studentId={studentId}
+          studentName={studentName}
+          gasUrl={gasUrl}
+        />
+      )}
+
+      {activeTab === 'process-quiz' && (
+        <ProcessQuiz10
+          studentId={studentId}
+          studentName={studentName}
+          gasUrl={gasUrl}
+        />
+      )}
+
+      {activeTab === 'case-quiz' && (
+        <CaseQuiz10
+          studentId={studentId}
+          studentName={studentName}
+          gasUrl={gasUrl}
+        />
+      )}
+
+      {activeTab === 'line-quiz' && (
         <>
           {/* Guide & Controls Strip */}
           <div className="bg-gradient-to-r from-blue-50 via-slate-50 to-indigo-50 border-b border-slate-200/80 px-4 py-2">
